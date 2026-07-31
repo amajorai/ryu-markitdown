@@ -1,0 +1,66 @@
+{
+  "id": "com.ryu.markitdown",
+  "name": "MarkItDown",
+  "version": "1.0.0",
+  "description": "Document parsing via Microsoft's MIT-licensed MarkItDown library — the default `document.parse` backend, and the one that works on a machine where the user installed nothing on purpose. `pip install 'markitdown[all]'` is a pure-Python install of a few tens of megabytes: no ONNX runtime, no layout-detection model download, no GPU, and no `brew`/`apt` packages to chase. It covers the formats people actually attach — PDF, DOCX, PPTX, XLSX/XLS, HTML, CSV, JSON, XML, EPUB, Outlook .msg, Jupyter notebooks, and ZIP archives expanded member-by-member — and it emits markdown natively rather than a flat text dump, so headings stay headings and spreadsheet tables stay tables. The tradeoffs are honest ones: no OCR (a scanned PDF comes back empty and the job says so), no legacy binary `.doc`/`.ppt`, and no element-level structure for a consumer that wants to chunk on document structure. Parses run as jobs: submit returns 202 + a job_id, the caller polls.",
+  "tagline": "Pure-pip document parsing, no native toolchain",
+  "keywords": [
+    "document",
+    "parse",
+    "pdf",
+    "docx",
+    "xlsx",
+    "markdown",
+    "extraction"
+  ],
+  "category": "Knowledge",
+  "engines": {
+    "ryu": ">=0.0.1"
+  },
+  "runnables": [],
+  "provides": [
+    {
+      "capability": "document.parse",
+      "version": "1.0.0",
+      "selectable": true,
+      "default": true,
+      "sidecar": "markitdown",
+      "route": "/parse"
+    }
+  ],
+  "permission_grants": [],
+  "sidecars": [
+    {
+      "name": "markitdown",
+      "port": 8094,
+      "health_path": "/health",
+      "lazy": true,
+      "idle_stop_secs": 1800,
+      "process": {
+        "kind": "python",
+        "entry": "ryu_markitdown",
+        "port_env": "RYU_MARKITDOWN_PORT",
+        "python_version": "3.11",
+        "pyproject_extra": "all",
+        "source": {
+          "url": "https://github.com/amajorai/ryu/releases/download/markitdown-sidecar-v1/ryu-markitdown-sidecar.tar.gz",
+          "format": "tar.gz"
+        },
+        "env": {
+          "RYU_MARKITDOWN_HOST": "127.0.0.1",
+          "RYU_MARKITDOWN_ROOTS": "${RYU_DIR}",
+          "RYU_MARKITDOWN_WORKDIR": "${RYU_DIR}/cache/markitdown"
+        }
+      },
+      "http": {
+        "routes": [
+          { "path": "/health" },
+          { "path": "/capability" },
+          { "path": "/parse" },
+          { "path": "/jobs" },
+          { "path": "/jobs/:job_id" }
+        ]
+      }
+    }
+  ]
+}
