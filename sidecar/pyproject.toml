@@ -1,0 +1,35 @@
+[project]
+name = "ryu-markitdown-sidecar"
+version = "0.1.0"
+description = "Ryu's Core-managed MarkItDown document-parsing sidecar (document.parse backend)"
+requires-python = ">=3.10"
+# Base server deps only. `markitdown` itself is optional so the process boots and
+# answers /health + /capability on any machine — that is how a user finds out the
+# install has not finished. A missing parse dep becomes a typed per-job error,
+# never a boot crash.
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+# `pip install -e ".[all]"` — the manifest's `pyproject_extra`. Pure Python, tens
+# of megabytes, no native toolchain and no model download. That is the whole
+# reason this backend is the `document.parse` default.
+all = ["markitdown[all]>=0.1.0"]
+# Narrower installs for users who know their corpus. The extras are MarkItDown's
+# own: pptx, docx, xlsx, xls, pdf, outlook, az-doc-intel, audio-transcription,
+# youtube-transcription.
+office = ["markitdown[docx,pptx,xlsx,xls]>=0.1.0"]
+pdf = ["markitdown[pdf]>=0.1.0"]
+
+[project.scripts]
+ryu-markitdown = "ryu_markitdown.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ryu_markitdown"]

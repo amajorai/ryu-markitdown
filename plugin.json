@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ryu.markitdown",
+  "version": "0.1.14",
+  "description": "Document parsing via Microsoft's MIT-licensed MarkItDown library — the default `document.parse` backend, and the one that works on a machine where the user installed nothing on purpose. `pip install 'markitdown[all]'` is a pure-Python install of a few tens of megabytes: no ONNX runtime, no layout-detection model download, no GPU, and no `brew`/`apt` packages to chase. It covers the formats people actually attach — PDF, DOCX, PPTX, XLSX/XLS, HTML, CSV, JSON, XML, EPUB, Outlook .msg, Jupyter notebooks, and ZIP archives expanded member-by-member — and it emits markdown natively rather than a flat text dump, so headings stay headings and spreadsheet tables stay tables. The tradeoffs are honest ones: no OCR (a scanned PDF comes back empty and the job says so), no legacy binary `.doc`/`.ppt`, and no element-level structure for a consumer that wants to chunk on document structure. Parses run as jobs: submit returns 202 + a job_id, the caller polls.",
+  "author": {
+    "name": "Ryu",
+    "url": "https://ryuhq.com"
+  },
+  "homepage": "https://github.com/amajorai/ryu-markitdown",
+  "repository": "https://github.com/amajorai/ryu-markitdown",
+  "keywords": [
+    "document",
+    "parse",
+    "pdf",
+    "docx",
+    "xlsx",
+    "markdown",
+    "extraction"
+  ],
+  "extensions": {
+    "com.ryuhq.ryu": {
+      "id": "@ryu/markitdown",
+      "displayName": "MarkItDown"
+    }
+  }
+}
